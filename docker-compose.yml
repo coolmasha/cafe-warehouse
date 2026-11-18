@@ -1,0 +1,46 @@
+services:
+  postgres-warehouse:
+    image: postgres:16-alpine
+    container_name: warehouse-db
+    environment:
+      POSTGRES_DB: warehouse
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5434:5432"
+    volumes:
+      - warehouse-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - cafe-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d warehouse"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  warehouse-service:
+    build:
+      context: ./warehouse-service
+      dockerfile: Dockerfile
+    image: warehouse-service:latest
+    container_name: warehouse-service
+    ports:
+      - "8083:8080"
+    environment:
+      PORT: 8080
+      DB_URL: "jdbc:postgresql://postgres-warehouse:5432/warehouse"
+      DB_USER: postgres
+      DB_PASSWORD: 123456
+    depends_on:
+      postgres-warehouse:
+        condition: service_healthy
+    networks:
+      - cafe-network
+
+networks:
+  cafe-network:
+    driver: bridge
+
+volumes:
+  warehouse-data:

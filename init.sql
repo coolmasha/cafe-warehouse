@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS milk_types (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE,
+    surcharge NUMERIC(10, 2) NOT NULL,
+    quantity INT NOT NULL
+);
