@@ -1,6 +1,6 @@
 package com.example
 
-import domain.warehouseRouting
+import api.warehouseRouting
 import io.ktor.server.application.Application
 
 fun Application.rootModule() {

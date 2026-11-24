@@ -6,11 +6,11 @@ import com.example.domain.model.MilkResponse
 
 class WarehouseController {
 
-    fun getAllMilk(): MilkListResponse {
+    fun getAllMilk(): List<MilkResponse> {
         val milkList = WarehouseRepository.getAllMilk()
-        return MilkListResponse(milkList = milkList.map {
+        return milkList.map {
             MilkResponse(id = it.id, name = it.name, surcharge = it.surcharge.toDouble())
-        })
+        }
     }
 
     fun getMilkById(id: Long): MilkResponse? {
